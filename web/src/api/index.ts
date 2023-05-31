@@ -1,4 +1,4 @@
-import request from '/@/utils/axios';
+import request from '@/utils/axios';
 
 // 获取文件列表
 export function GetList(data: object) {

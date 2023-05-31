@@ -1,8 +1,9 @@
+<!--文件列表-->
 <script setup lang="ts">
 import { reactive, ref} from "vue"
-import {FileSelectIcon, sizeToStr} from '/@/utils/utils'
+import {FileSelectIcon, sizeToStr} from '@/utils/utils'
 import {useRouter} from "vue-router"
-import rightOperation from "./rightOperation.vue";
+import rightOperation from "./RightOperation.vue";
 
 const router = useRouter()
 const props = defineProps(['list'])
