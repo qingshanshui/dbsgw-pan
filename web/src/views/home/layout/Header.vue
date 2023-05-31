@@ -2,13 +2,14 @@
 <script setup lang="ts">
 import {Search} from '@vicons/ionicons5'
 import logo from '@/assets/logo.png'
+
 </script>
 
 <template>
   <header class="header">
     <div class="header-logo">
       <a href="/public">
-        <img :src="logo"/>
+        <img :src="logo" alt="logo"/>
       </a>
     </div>
     <div class="header-search">

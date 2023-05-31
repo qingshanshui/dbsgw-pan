@@ -7,6 +7,7 @@ import Details from "../components/Details.vue"
 import {GetList, GetFile} from "@/api"
 import {useRoute} from 'vue-router'
 import bus from "@/utils/bus";
+import {Obj} from '../index'
 
 let route = useRoute()
 
@@ -14,7 +15,7 @@ watch(route, () => {
   initStateFile()
 })
 let state = reactive({
-  list: [] as any[],
+  list: [] as Obj[],
   show: false,
   DirOrDetail: true, // true是详情  false是文件夹
 })

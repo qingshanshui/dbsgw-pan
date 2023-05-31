@@ -3,8 +3,8 @@
 import { reactive, ref} from "vue"
 import {FileSelectIcon, sizeToStr} from '@/utils/utils'
 import {useRouter} from "vue-router"
-import rightOperation from "./RightOperation.vue";
-
+import RightOperation from "./RightOperation.vue";
+import {Obj} from '../index'
 const router = useRouter()
 const props = defineProps(['list'])
 const rightOperations:any = ref(null);
@@ -28,10 +28,9 @@ document.addEventListener('click', () => {
 })
 </script>
 
-
 <template>
     <div class="list">
-        <rightOperation ref="rightOperations" :detail="state.detail"/>
+        <RightOperation ref="rightOperations" :detail="state.detail"/>
         <div class="t-list-header">
             <div class="list-item row">
                 <div class="col-xs-9 col-sm-6 list-item-name">名称</div>
@@ -40,7 +39,7 @@ document.addEventListener('click', () => {
             </div>
         </div>
         <div class="t-list-body">
-            <div class="list-item row" v-for="(item) in props.list" @click="handelDirRoute(item)"
+            <div class="list-item row" v-for="(item) in props.list as Obj[]" @click="handelDirRoute(item)"
                  @contextmenu="contextmenuOperation($event,item)">
                 <div class="col-xs-9 col-sm-6 list-item-name">
                     <n-icon :component="FileSelectIcon(item)" size="25" color="rgb(24, 144, 255)"
