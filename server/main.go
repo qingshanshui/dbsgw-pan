@@ -6,6 +6,7 @@ import (
 	_ "fiber-layout/initalize"
 	"fiber-layout/models"
 	"fiber-layout/routers"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -28,10 +29,10 @@ func main() {
 	routers.SetRoute(app)
 	// 初始化 数据表
 	initalize.DB.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.FileInfo{})
-	// AutoErr := initalize.DB.AutoMigrate(models.NewFileInfo())
-	// if AutoErr != nil {
-	// 	fmt.Println("mysql迁移表失败")
-	// }
+	AutoErr := initalize.DB.AutoMigrate(models.NewFileInfo())
+	if AutoErr != nil {
+		fmt.Println("mysql迁移表失败")
+	}
 	// 监听端口
 	_ = app.Listen(viper.GetString("App.Port"))
 }

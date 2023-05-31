@@ -6,15 +6,15 @@ app:
 # mysql配置
 mysql:
   enable: true
-  user: root
-  password: 123456
+  user: dbsgw_pan
+  password: A6zZwY4nE7Z23rjA
   host: 127.0.0.1
   port: 3306
-  dbname: admin_nuzn
+  dbname: dbsgw_pan
 
 # redis配置
 redis:
-  enable: true
+  enable: false
   host: "127.0.0.1"
   port: "6379"
   database: 1
