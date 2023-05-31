@@ -13,7 +13,7 @@ func SetRoute(app *fiber.App) {
 	group.Post("/list", main.GetList)     // 获取文件列表
 	group.Post("/get", main.GetFile)      // 获取文件信息
 	group.Get("/download", main.Download) // 下载文件
-	group.Post("/login", main.Login)      // 登录获取token
+	group.Post("/login", main.Login)      // 登录
 
 	// 以下接口需要权限
 	group.Use(middleware.Auth)

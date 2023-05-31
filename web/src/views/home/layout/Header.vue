@@ -8,7 +8,7 @@ import logo from '@/assets/logo.png'
 <template>
   <header class="header">
     <div class="header-logo">
-      <a href="/public">
+      <a href="/">
         <img :src="logo" alt="logo"/>
       </a>
     </div>

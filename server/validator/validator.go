@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// GET
+// CheckQueryParams GET验证参数
 func CheckQueryParams(c *fiber.Ctx, obj interface{}) error {
 	if err := c.QueryParser(obj); err != nil {
 		return err
@@ -16,7 +16,7 @@ func CheckQueryParams(c *fiber.Ctx, obj interface{}) error {
 	return nil
 }
 
-// POST
+// CheckPostParams POST验证参数
 func CheckPostParams(c *fiber.Ctx, obj interface{}) error {
 	if err := c.BodyParser(obj); err != nil {
 		return err

@@ -23,6 +23,7 @@ func NewDefaultController() *DefaultController {
 	return &DefaultController{}
 }
 
+// GetList 获取文件夹信息
 func (t *DefaultController) GetList(c *fiber.Ctx) error {
 	// 初始化参数结构体
 	ListRequestForm := form.ListRequest{}
@@ -39,6 +40,7 @@ func (t *DefaultController) GetList(c *fiber.Ctx) error {
 	return c.JSON(t.Ok(api))
 }
 
+// GetFile 获取文件信息
 func (t *DefaultController) GetFile(c *fiber.Ctx) error {
 	// 初始化参数结构体
 	GetRequestForm := form.GetRequest{}
@@ -55,6 +57,7 @@ func (t *DefaultController) GetFile(c *fiber.Ctx) error {
 	return c.JSON(t.Ok(api))
 }
 
+// Download 文件流的形式返回前端
 func (t *DefaultController) Download(c *fiber.Ctx) error {
 	// 初始化参数结构体
 	DownloadRequestForm := form.DownloadRequest{}
@@ -73,6 +76,8 @@ func (t *DefaultController) Download(c *fiber.Ctx) error {
 	}
 	return errors.New("文件错误")
 }
+
+// Login 登录
 func (t *DefaultController) Login(c *fiber.Ctx) error {
 	// 初始化参数结构体
 	DownloadRequestForm := form.LoginRequest{}
@@ -87,6 +92,7 @@ func (t *DefaultController) Login(c *fiber.Ctx) error {
 	return c.JSON(t.Ok(api))
 }
 
+// Upload 文件上传
 func (t *DefaultController) Upload(c *fiber.Ctx) error {
 	// 接收文件file
 	file, err := c.FormFile("file")

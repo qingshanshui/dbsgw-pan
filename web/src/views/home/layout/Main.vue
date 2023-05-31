@@ -30,15 +30,11 @@ onMounted(() => {
 const initStateFile = async () => {
   state.show = true
   let res = await GetFile({path: route.path === "/" ? "" : route.path})
-  if (Array.isArray(res?.data?.data)) {
-    if (res?.data?.data[0].isDir) {
-      await initStateList()
-    } else {
-      state.DirOrDetail = true
-      state.list = res?.data?.data
-    }
+  if (res?.data?.data.isDir) {
+    await initStateList()
   } else {
-    state.list = []
+    state.DirOrDetail = true
+    state.list = res?.data?.data
   }
   state.show = false
 }
@@ -60,7 +56,7 @@ const initStateList = async () => {
         <template v-else>
           <template v-if="state.DirOrDetail">
             <!--详情-->
-            <Details :detail="state.list[0]"/>
+            <Details :detail="state.list"/>
           </template>
           <template v-else>
             <!--列表-->

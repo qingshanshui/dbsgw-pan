@@ -7,12 +7,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Auth 权限晓验
 func Auth(ctx *fiber.Ctx) error {
 	token := ctx.Get("Authorization")
 	if token == "" {
 		return ctx.JSON(fiber.Map{
 			"code": 0,
-			"data": "权限不足，禁止操作",
+			"data": "token 不存在",
 			"msg":  "操作失败",
 		})
 	} else {
@@ -20,7 +21,7 @@ func Auth(ctx *fiber.Ctx) error {
 		if err != nil {
 			return ctx.JSON(fiber.Map{
 				"code": 0,
-				"data": "权限不足，禁止操作",
+				"data": "token 解析失败",
 				"msg":  "操作失败",
 			})
 		} else {

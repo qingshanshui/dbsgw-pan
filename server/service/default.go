@@ -15,6 +15,7 @@ func NewDefaultService() *Default {
 	return &Default{}
 }
 
+// GetList 获取文件列表
 func (t *Default) GetList(list form.ListRequest) ([]form.ListResponse, error) {
 	data, err := utils.GetDirDataList(list.Path)
 	if err != nil {
@@ -23,7 +24,8 @@ func (t *Default) GetList(list form.ListRequest) ([]form.ListResponse, error) {
 	return data, nil
 }
 
-func (t *Default) GetFile(list form.GetRequest) ([]form.GetResponse, error) {
+// GetFile 获取文件信息
+func (t *Default) GetFile(list form.GetRequest) (form.GetResponse, error) {
 	data, err := utils.GetDirFile(list.Path)
 	if err != nil {
 		return data, err
@@ -31,6 +33,7 @@ func (t *Default) GetFile(list form.GetRequest) ([]form.GetResponse, error) {
 	return data, nil
 }
 
+// Login 登录
 func (t *Default) Login(login form.LoginRequest) (string, error) {
 	if login.Username == "13122256420" && login.Password == "123456" {
 		token, err := utils.CreateToken(login.Username, viper.GetString("Jwt.Secret"))

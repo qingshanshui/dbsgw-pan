@@ -13,7 +13,7 @@ import (
 	"strconv"
 )
 
-// GetDirData 获取目录下文件/文件夹
+// GetDirDataList  获取目录下文件/文件夹
 func GetDirDataList(path string) ([]form.ListResponse, error) {
 	var l []form.ListResponse
 	pwd, _ := os.Getwd()
@@ -43,8 +43,8 @@ func GetDirDataList(path string) ([]form.ListResponse, error) {
 }
 
 // GetDirFile 获取目录下文件信息
-func GetDirFile(path string) ([]form.GetResponse, error) {
-	var l []form.GetResponse
+func GetDirFile(path string) (form.GetResponse, error) {
+	var l form.GetResponse
 	pwd, _ := os.Getwd()
 	url := pwd + "/static" + path
 	exists, err := PathExists(url)
@@ -58,20 +58,19 @@ func GetDirFile(path string) ([]form.GetResponse, error) {
 		if err != nil {
 			return l, err
 		}
-		l = append(l, form.GetResponse{
+		l = form.GetResponse{
 			Path:  path,
 			IsDir: fileInfoList.IsDir(),
 			Time:  fileInfoList.ModTime().Format("2006-01-02 15:04:05"),
 			Name:  fileInfoList.Name(),
 			Size:  fileInfoList.Size(),
-		})
+		}
 		return l, err
 	}
-	return nil, nil
+	return l, nil
 }
 
-// PathExists 判断一个文件或文件夹是否存在
-// 输入文件路径，根据返回的bool值来判断文件或文件夹是否存在
+// PathExists 输入文件路径，根据返回的bool值来判断文件或文件夹是否存在
 func PathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -83,33 +82,20 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
-/*
-效验文件后缀
-extName：文件后缀
-extMap：效验后缀
-返回值：布尔值
-*/
-
-func allExtMap(extMap []string, extName string) bool {
+// AllExtMap 效验文件后缀
+func AllExtMap(extMap []string, extName string) bool {
 	allowExtMap := make(map[string]bool)
 	for _, val := range extMap {
 		allowExtMap[val] = true
 	}
 	// 判断excel上传是否合法
 	if _, ok := allowExtMap[extName]; !ok {
-
 		return false
 	}
 	return true
 }
 
-/**
-创建文件夹/文件名
-extName：文件后缀
-route：设置特定目录后缀
-返回值：bool,路径
-*/
-
+// Mkdir 生成文件名
 func Mkdir(extName, route string) (error, string, string) {
 	pwd, _ := os.Getwd()
 	// 组成 文件路径
@@ -124,13 +110,7 @@ func Mkdir(extName, route string) (error, string, string) {
 	return nil, saveDir, fileUnixName + "--" + extName
 }
 
-/**
-创建文件夹/文件名
-extName：文件后缀
-route：设置特定目录后缀
-返回值：bool,路径
-*/
-
+// MkdirInfo 生产文件夹
 func MkdirInfo(extName, route string) (error, string, string) {
 	pwd, _ := os.Getwd()
 	// 组成 文件路径
@@ -143,7 +123,7 @@ func MkdirInfo(extName, route string) (error, string, string) {
 	return nil, saveDir, extName
 }
 
-// 获取文件md5
+// GetFileMd5 获取文件md5
 func GetFileMd5(file *multipart.FileHeader) string {
 	md5hash := md5.New()
 	f, _ := file.Open()

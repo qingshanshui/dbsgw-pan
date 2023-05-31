@@ -18,7 +18,7 @@ func NewFileInfo() *FileInfo {
 	return &FileInfo{}
 }
 
-// md5 验证
+// Md5Verify 验证
 func (t *FileInfo) Md5Verify(cmd5 string) ([]FileInfo, error) {
 	var sys []FileInfo
 	if err := initalize.DB.Raw("SELECT * FROM file_infos WHERE md5 = ? LIMIT 10", cmd5).Find(&sys).Error; err != nil {
@@ -27,7 +27,7 @@ func (t *FileInfo) Md5Verify(cmd5 string) ([]FileInfo, error) {
 	return sys, nil
 }
 
-// 存储文件数据
+// Create 存储文件数据
 func (t *FileInfo) Create() error {
 	if err := initalize.DB.Exec("INSERT INTO file_infos (file_infos.created_at,file_infos.`name`,file_infos.path,file_infos.size,file_infos.md5) VALUES(?,?,?,?,?)", t.CreatedAt, t.Name, t.Path, t.Size, t.Md5).Error; err != nil {
 		return err
