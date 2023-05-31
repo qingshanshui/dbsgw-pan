@@ -1,0 +1,12 @@
+:root{
+    --theme-background-color:#f7f8fa; /*主题背景色*/
+    --background-color:#ffffff; /*背景色*/
+    --padding:10px;/*内边距*/
+    --margin:10px;/*外边距*/
+    --border-radius:6px;/*圆角*/
+}
+
+html,body,#app{
+    height: 100%;
+    background-color: var(--theme-background-color);
+}
