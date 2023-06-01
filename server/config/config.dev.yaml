@@ -6,11 +6,11 @@ app:
 # mysql配置
 mysql:
   enable: true
-  user: dbsgw
-  password: saGrwT2PWxGRDYpm
-  host: 106.12.125.65
+  user: qingshanshui
+  password: 123456
+  host: 127.0.0.1
   port: 3306
-  dbname: dbsgw
+  dbname: qingshanshui
 
 # redis配置
 redis:
