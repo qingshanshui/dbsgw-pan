@@ -3,9 +3,13 @@
 #### 介绍
 是fiber创建的网盘的后端接口
 
-#### 软件架构
-软件架构说明
+#### 调试 :
+1. `go run main.go -mode dev`本地调试
+2. `go run main.go -mode prod`生产调试
 
+#### 生产 :
+1. `main/main.exe -mode dev`本地
+2. `main/main.exe -mode prod`生产
 
 #### 安装教程
 
