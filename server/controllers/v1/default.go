@@ -108,7 +108,7 @@ func (t *DefaultController) Upload(c *fiber.Ctx) error {
 		return c.JSON(t.Fail(err))
 	}
 	if len(FileInfos) != 0 {
-		return c.JSON(t.Ok(FileInfos))
+		return c.JSON(t.Fail(errors.New("文件重复上传"), 501))
 	}
 
 	if c.Query("type") == "1" && c.Query("type") == "2" {
@@ -120,7 +120,7 @@ func (t *DefaultController) Upload(c *fiber.Ctx) error {
 	//  api上传
 	if c.Query("type") == "1" {
 		// 拼接文件路径
-		err, pathDir, FileName = utils.Mkdir(file.Filename, "")
+		err, pathDir, FileName = utils.ApiUpload(file.Filename, "")
 		if err != nil {
 			return c.JSON(t.Fail(err))
 		}
@@ -128,7 +128,7 @@ func (t *DefaultController) Upload(c *fiber.Ctx) error {
 	// 上传到当前目录
 	if c.Query("type") == "2" {
 		// 拼接文件路径
-		err, pathDir, FileName = utils.MkdirInfo(file.Filename, c.Query("url"))
+		err, pathDir, FileName = utils.Upload(file.Filename, c.Query("url"))
 		if err != nil {
 			return c.JSON(t.Fail(err))
 		}

@@ -95,8 +95,8 @@ func AllExtMap(extMap []string, extName string) bool {
 	return true
 }
 
-// Mkdir 生成文件名
-func Mkdir(extName, route string) (error, string, string) {
+// ApiUpload api上传
+func ApiUpload(extName, route string) (error, string, string) {
 	pwd, _ := os.Getwd()
 	// 组成 文件路径
 	dir := pwd + "/static/upload/" + GetFileDay() + route
@@ -110,8 +110,8 @@ func Mkdir(extName, route string) (error, string, string) {
 	return nil, saveDir, fileUnixName + "--" + extName
 }
 
-// MkdirInfo 生产文件夹
-func MkdirInfo(extName, route string) (error, string, string) {
+// Upload 文件上传
+func Upload(extName, route string) (error, string, string) {
 	pwd, _ := os.Getwd()
 	// 组成 文件路径
 	dir := pwd + "/static" + route

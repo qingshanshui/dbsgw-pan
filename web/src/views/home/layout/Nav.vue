@@ -2,39 +2,38 @@
 <script setup lang="ts">
 import {Home} from '@vicons/ionicons5'
 import {useRoute, useRouter} from "vue-router"
-import {watch, reactive, computed, onMounted} from "vue"
-import {useMessage, UploadCustomRequestOptions} from 'naive-ui'
-import {upload} from "@/api";
+import {watch, reactive, computed, onMounted,ref} from "vue"
+import {useMessage} from 'naive-ui'
+import Upload from "@/views/home/components/Upload.vue";
 
 let route = useRoute()
 let routes = useRouter()
 const message = useMessage()
+
+// 监听路由变化/变化面包屑导航
 watch(route, () => {
   routeToUrl()
 })
 
+// upload上传文件的ref
+let uploads = ref();
+
+// 数据状态
 let state = reactive({
   routeList: [] as any[],
-  showModal: false,
 })
 
-const onNegativeClick = () => {
-  state.showModal = false
-}
-
-const onPositiveClick = () => {
-  state.showModal = false
-}
-
+// 上传文件
 const handelButton = () => {
-  state.showModal = true
+  uploads.value.show()
 }
 
+// 判断上传文件按钮是否显示
 let isUpload = computed(() => {
   return !!localStorage.getItem('token')
 })
 
-
+// 面包屑导航事件
 const handelRoute = (obj: any) => {
   routes.push(obj.path)
 }
@@ -50,77 +49,11 @@ function routeToUrl() {
   state.routeList = arr
 }
 
+// 页面加载完成后
 onMounted(() => {
   routeToUrl()
 })
-// api上传
-const customRequestApi = ({
-                            file,
-                            data,
-                            headers,
-                            withCredentials,
-                            action,
-                            onFinish,
-                            onError,
-                            onProgress
-                          }: UploadCustomRequestOptions) => {
-  const formData = new FormData()
-  if (data) {
-    Object.keys(data).forEach((key) => {
-      formData.append(
-          key,
-          data[key as keyof UploadCustomRequestOptions['data']]
-      )
-    })
-  }
-  formData.append("file", file.file as File)
-  upload(formData, {type: 1}).then(res => {
-    if (res.data.code === 1000) {
-      message.success("上传成功")
-      onFinish()
-    } else {
-      message.warning(res.data?.data)
-      onError()
-    }
-  }).catch(err => {
-    message.warning("上传失败")
-    onError()
-  })
-}
-// 当前文件上传
-const customRequest = ({
-                         file,
-                         data,
-                         headers,
-                         withCredentials,
-                         action,
-                         onFinish,
-                         onError,
-                         onProgress
-                       }: UploadCustomRequestOptions) => {
-  const formData = new FormData()
-  if (data) {
-    Object.keys(data).forEach((key) => {
-      formData.append(
-          key,
-          data[key as keyof UploadCustomRequestOptions['data']]
-      )
-    })
-  }
-  formData.append("file", file.file as File)
-  upload(formData, {type: 2, url: route.path}).then(res => {
-    if (res.data.code === 1000) {
-      message.success("上传成功")
-      onFinish()
-    } else {
-      message.warning(res.data?.data)
-      onError()
-    }
-  }).catch(err => {
-    message.warning("上传失败")
-    onError()
-  })
-}
+
 </script>
 
 <template>
@@ -137,21 +70,9 @@ const customRequest = ({
     <div class="upload" v-if="isUpload">
       <n-button type="info" size="small" @click="handelButton">上传文件</n-button>
     </div>
+    <Upload ref="uploads" />
   </div>
-  <n-modal v-model:show="state.showModal" :mask-closable="false" preset="dialog" title="文件上传">
-    <div class="uploads">
-      <div class="uploads-item">
-        <n-upload :custom-request="customRequestApi" multiple :show-file-list="false">
-          <n-button type="info" size="small">api上传</n-button>
-        </n-upload>
-      </div>
-      <div class="uploads-item">
-        <n-upload :custom-request="customRequest" multiple :show-file-list="false">
-          <n-button type="info" size="small">上传当前目录</n-button>
-        </n-upload>
-      </div>
-    </div>
-  </n-modal>
+
 </template>
 
 <style scoped>
@@ -165,9 +86,6 @@ const customRequest = ({
   margin: var(--margin) 0;
 }
 
-.uploads-item {
-  margin: 10px;
-}
 
 /deep/ a,
 a:hover {
