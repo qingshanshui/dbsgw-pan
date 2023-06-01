@@ -20,12 +20,6 @@ let state = reactive({
   DirOrDetail: true, // true是详情  false是文件夹
 })
 
-onMounted(() => {
-  initStateFile()
-  bus.on("stateLoading", (loading: any) => {
-    state.show = loading
-  })
-})
 // 获取文件信息
 const initStateFile = async () => {
   state.show = true
@@ -38,6 +32,7 @@ const initStateFile = async () => {
   }
   state.show = false
 }
+
 // 获取文件列表
 const initStateList = async () => {
   state.show = true
@@ -46,6 +41,11 @@ const initStateList = async () => {
   state.DirOrDetail = false
   state.list = res?.data?.data || []
 }
+
+initStateFile()
+bus.on("stateLoading", (loading: any) => {
+  state.show = loading
+})
 </script>
 
 <template>
