@@ -6,6 +6,10 @@ import {watch, reactive, computed, onMounted,ref} from "vue"
 import {useMessage} from 'naive-ui'
 import Upload from "@/views/home/components/Upload.vue";
 
+import {userInfos} from "@/stores/user";
+
+let users = userInfos()
+
 let route = useRoute()
 let routes = useRouter()
 const message = useMessage()
@@ -30,7 +34,7 @@ const handelButton = () => {
 
 // 判断上传文件按钮是否显示
 let isUpload = computed(() => {
-  return !!localStorage.getItem('token')
+  return !!localStorage.getItem('token') && !users.DirOrDetail
 })
 
 // 面包屑导航事件
@@ -84,6 +88,8 @@ onMounted(() => {
 
 .navs-breadcrumb {
   margin: var(--margin) 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 

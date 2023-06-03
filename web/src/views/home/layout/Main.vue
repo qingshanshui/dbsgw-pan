@@ -9,17 +9,26 @@ import {useRoute} from 'vue-router'
 import bus from "@/utils/bus";
 import {Obj} from '../index'
 
+import {userInfos} from "@/stores/user";
+let users = userInfos()
+
+
 let route = useRoute()
 
 watch(route, () => {
   initStateFile()
 })
+
 let state = reactive({
   list: [] as Obj[],
   show: false,
   DirOrDetail: true, // true是详情  false是文件夹
 })
 
+watch(state, () => {
+  users.setDirOrDetail(state.DirOrDetail)
+  console.log(users.DirOrDetail,"--")
+})
 // 获取文件信息
 const initStateFile = async () => {
   state.show = true
@@ -45,6 +54,9 @@ const initStateList = async () => {
 initStateFile()
 bus.on("stateLoading", (loading: any) => {
   state.show = loading
+})
+bus.on("reload",()=>{
+  initStateFile()
 })
 </script>
 

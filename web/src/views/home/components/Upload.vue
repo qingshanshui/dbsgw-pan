@@ -3,7 +3,7 @@ import {reactive, defineExpose,ref} from "vue";
 import {useMessage, UploadCustomRequestOptions} from 'naive-ui'
 import {useRoute} from "vue-router"
 import {upload} from "@/api";
-
+import bus from "@/utils/bus";
 let route = useRoute()
 const message = useMessage()
 let state = reactive({
@@ -56,6 +56,7 @@ const customRequest = ({
   upload(formData, {type: state.value, url: route.path}).then(res => {
     if (res.data.code === 1000) {
       message.success("上传成功")
+      bus.emit("reload")
       onFinish()
     } else {
       message.warning(res.data?.data)
