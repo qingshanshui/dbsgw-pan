@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fiber-layout/models"
 	"fiber-layout/pkg/utils"
 	"fiber-layout/validator/form"
 
@@ -43,4 +44,14 @@ func (t *Default) Login(login form.LoginRequest) (string, error) {
 		return token, nil
 	}
 	return "", errors.New("密码错误")
+}
+
+// RandomImg 随机图片
+func (t *Default) RandomImg() (*models.FileInfo, error) {
+	i := models.NewFileInfo()
+	img, err := i.RandomImg()
+	if err != nil {
+		return nil, err
+	}
+	return img, nil
 }

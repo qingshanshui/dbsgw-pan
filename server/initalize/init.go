@@ -21,4 +21,5 @@ func init() {
 			InitDatabaseLogger()
 		}
 	})
+	initFileType()
 }

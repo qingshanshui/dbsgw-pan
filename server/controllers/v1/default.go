@@ -9,6 +9,7 @@ import (
 	"fiber-layout/service"
 	"fiber-layout/validator"
 	"fiber-layout/validator/form"
+	"fmt"
 	"os"
 	"time"
 
@@ -114,6 +115,7 @@ func (t *DefaultController) Upload(c *fiber.Ctx) error {
 	if c.Query("type") == "1" && c.Query("type") == "2" {
 		return c.JSON(t.Fail(errors.New("参数错误")))
 	}
+
 	var pathDir = ""  // 文件路径
 	var FileName = "" //文件名
 
@@ -134,6 +136,12 @@ func (t *DefaultController) Upload(c *fiber.Ctx) error {
 		}
 	}
 
+	// 获取文件类型
+	Type, Mime, err := initalize.GetFileType(file)
+	if err != nil {
+		return c.JSON(t.Fail(err))
+	}
+
 	// 保存文件
 	if err := c.SaveFile(file, pathDir); err != nil {
 		return c.JSON(t.Fail(err))
@@ -143,8 +151,20 @@ func (t *DefaultController) Upload(c *fiber.Ctx) error {
 	fi.Name = FileName
 	fi.Path = pathDir
 	fi.Size = int(file.Size)
+	fi.Type = Type
+	fi.MIME = Mime
 	if err := fi.Create(); err != nil {
 		return c.JSON(t.Fail(err))
 	}
 	return c.JSON(t.Ok(pathDir))
+}
+
+// RandomImg 随机图片
+func (t *DefaultController) RandomImg(c *fiber.Ctx) error {
+	api, err := service.NewDefaultService().RandomImg()
+	if err != nil {
+		return c.JSON(t.Fail(err))
+	}
+	fmt.Println(api)
+	return c.SendFile(api.Path)
 }
