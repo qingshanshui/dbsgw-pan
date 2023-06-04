@@ -1,39 +1,44 @@
+
 # dbsgw-pan
 
-#### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
-
-#### 软件架构
-软件架构说明
+> 本项目是一个在线云盘，方便个人文件存储，上传，下载，分享等等一些列个人在线存储项目
 
 
-#### 安装教程
+###  运行
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+拉取代码后在项目根目录执行如下命令：
 
-#### 使用说明
+```shell
+# web（前端）：node
+cd web/ # 进入web目录
+npm i # 下载依赖
+npm run dev # 运行项目
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+# server（后端）：go
+cd server/ # 进入web目录
+go env -w GO111MODULE=on # 建议开启GO111MODULE
+go mod download # 下载依赖
+go run main.go # 运行项目
+```
 
-#### 参与贡献
+### 部署
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+```shell
+# web（前端）：node
+npm run build #打包 （dist目录直接nginx部署）
 
+# server（后端）：go
+$ENV:GOOS="linux" # 设置linux打包环境
+go build mian.go # go build
+nohup ./fiber-layout -mode prod # 服务器 nohup工具 
+```
 
-#### 特技
+### 问题/需求
+- [x] 面包屑导航深度过长会挤压页面【......】
+- [ ] 删除文件功能
+- [ ] 上传文件超过2m就会超时
+- [ ] 图片分享链接盗用
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+### 代码贡献
+
+不完善的地方，欢迎大家 Fork 并提交 PR！
