@@ -1,8 +1,7 @@
 import {defineStore} from "pinia"
 
 /**
- * 权限路由表
- * @methods setUserInfos 设置权限路由表
+ * 登录信息
  */
 export const userInfos = defineStore('user', {
     state: () => ({

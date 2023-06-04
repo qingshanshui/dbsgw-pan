@@ -16,6 +16,6 @@ export const notFoundAndNoPower = [
 // 创建 路由实例
 export const router = createRouter({
     // history: createWebHashHistory(), // 本地调试
-    history: createWebHistory(), // 线上  加 nginx代理
+    history: createWebHistory(), // 线上  加nginx代理
     routes: [...notFoundAndNoPower],
 });

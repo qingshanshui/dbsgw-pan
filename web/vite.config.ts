@@ -18,6 +18,13 @@ export default defineConfig({
         proxy: {
             '/v1': 'http://127.0.0.1:8005', // 本地接口
         },
+    },
+    build: {
+        terserOptions: {
+            compress: {
+                drop_console: true,//去掉log
+                drop_debugger: true,//去掉debug
+            }
+        }
     }
-
 })

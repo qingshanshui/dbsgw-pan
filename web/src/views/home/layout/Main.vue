@@ -27,7 +27,6 @@ let state = reactive({
 
 watch(state, () => {
   users.setDirOrDetail(state.DirOrDetail)
-  console.log(users.DirOrDetail,"--")
 })
 // 获取文件信息
 const initStateFile = async () => {

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {reactive, defineExpose,ref} from "vue";
+import {reactive, defineExpose, ref} from "vue";
 import {useMessage, UploadCustomRequestOptions} from 'naive-ui'
 import {useRoute} from "vue-router"
 import {upload} from "@/api";
 import bus from "@/utils/bus";
+
 let route = useRoute()
 const message = useMessage()
 let state = reactive({
@@ -77,12 +78,12 @@ defineExpose({show, hide})
     <div class="uploads">
       <n-grid x-gap="12" :cols="2">
         <n-gi class="uploads-item">
-          <n-select v-model:value="state.value"  :options="state.options" />
+          <n-select v-model:value="state.value" :options="state.options"/>
         </n-gi>
         <n-gi class="uploads-item">
-            <n-upload :custom-request="customRequest" multiple :show-file-list="false">
-              <n-button type="info" size="small">上传当前目录</n-button>
-            </n-upload>
+          <n-upload :custom-request="customRequest"  :show-file-list="false">
+            <n-button type="info" size="small">上传当前目录</n-button>
+          </n-upload>
         </n-gi>
       </n-grid>
     </div>
@@ -90,9 +91,10 @@ defineExpose({show, hide})
 </template>
 
 <style scoped>
-.uploads{
+.uploads {
   margin: 20px;
 }
+
 .uploads-item {
   display: flex;
   align-items: center;
