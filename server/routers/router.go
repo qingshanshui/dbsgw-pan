@@ -18,6 +18,6 @@ func SetRoute(app *fiber.App) {
 
 	// 以下接口需要权限
 	group.Use(middleware.Auth)
-	group.Post("/upload", main.Upload) // 上传文件
-
+	group.Post("/upload/chunkFile", main.ChunkFile) // 上传切片
+	group.Post("/upload/mergeFile", main.MergeFile) // 合并切片
 }

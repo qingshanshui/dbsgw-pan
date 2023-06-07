@@ -82,6 +82,24 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
+// CrateFile 创建文件
+func CrateFile(fileChunk *multipart.FileHeader, fileName string) error {
+	openFile, _ := fileChunk.Open()
+	p := "static/" + fileName
+	newFile, _ := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0766)
+	data := make([]byte, 1024, 1024)
+	for {
+		total, err := openFile.Read(data)
+		if err == io.EOF {
+			openFile.Close()
+			break
+		}
+		_, err = newFile.Write(data[:total])
+	}
+	newFile.Close()
+	return nil
+}
+
 // AllExtMap 效验文件后缀
 func AllExtMap(extMap []string, extName string) bool {
 	allowExtMap := make(map[string]bool)

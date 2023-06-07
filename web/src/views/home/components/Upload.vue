@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import {reactive, defineExpose, ref} from "vue";
+import {reactive, defineExpose, ref,getCurrentInstance} from "vue";
 import {useMessage, UploadCustomRequestOptions} from 'naive-ui'
 import {useRoute} from "vue-router"
-import {upload} from "@/api";
+import {chunkFile, mergeFile} from "@/api";
 import bus from "@/utils/bus";
-
+import { nanoid } from "nanoid";
+// 获取上下文
+const { proxy } = <any>getCurrentInstance()
 let route = useRoute()
 const message = useMessage()
 let state = reactive({
@@ -34,39 +36,51 @@ const hide = () => {
 }
 
 // 文件上传
-const customRequest = ({
-                         file,
-                         data,
-                         headers,
-                         withCredentials,
-                         action,
-                         onFinish,
-                         onError,
-                         onProgress
-                       }: UploadCustomRequestOptions) => {
-  const formData = new FormData()
-  if (data) {
-    Object.keys(data).forEach((key) => {
-      formData.append(
-          key,
-          data[key as keyof UploadCustomRequestOptions['data']]
-      )
+const customRequest = async ({
+                               file,
+                               data,
+                               headers,
+                               withCredentials,
+                               action,
+                               onFinish,
+                               onError,
+                               onProgress
+                             }: UploadCustomRequestOptions) => {
+
+  // 创建切片
+  let fileChunks: any = [] // 切片集合数组
+  let size = 1024 * 1024*2; // 2m 切片大小
+  let index = 0 // 切片序号
+  let files = file.file // file文件
+
+  for (let i = 0; i < files.size; i += size) {
+    fileChunks.push({
+      hash: index++,
+      chunk: files.slice(i, i + size)
     })
   }
-  formData.append("file", file.file as File)
-  upload(formData, {type: state.value, url: route.path}).then(res => {
-    if (res.data.code === 1000) {
-      message.success("上传成功")
-      bus.emit("reload")
-      onFinish()
-    } else {
-      message.warning(res.data?.data)
-      onError()
-    }
-  }).catch(err => {
-    message.warning("上传失败")
-    onError()
-  })
+
+  // 生成 文件统一的 nanoid
+  let id = nanoid()
+  for (let i = 0; i < fileChunks.length; i++) {
+    let item = fileChunks[i]
+    let formData = new FormData()
+    formData.append('fileName', file.name)
+    formData.append('fileId', id)
+    formData.append('fileChunk', item.chunk)
+    formData.append('fileIndex', item.hash)
+    await chunkFile(formData)
+  }
+
+  let formDatas = new FormData()
+  formDatas.append('fileId', id)
+  formDatas.append('fileName', file.name)
+  formDatas.append('fileIndex', fileChunks.length)
+  let res: any = await mergeFile(formDatas)
+  console.log(res,"res")
+  if (res.data.code != 1000) return  message.success("上传失败")
+  message.success("上传成功")
+
 }
 
 // 向外暴露函数
@@ -81,7 +95,7 @@ defineExpose({show, hide})
           <n-select v-model:value="state.value" :options="state.options"/>
         </n-gi>
         <n-gi class="uploads-item">
-          <n-upload :custom-request="customRequest"  :show-file-list="false">
+          <n-upload :custom-request="customRequest" :show-file-list="false">
             <n-button type="info" size="small">上传当前目录</n-button>
           </n-upload>
         </n-gi>

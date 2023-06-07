@@ -37,3 +37,9 @@ func GetFileDay() string {
 	template := "2006/01/02"
 	return time.Now().Format(template)
 }
+
+// GetFileDayFront 获取当前 前一天 年/月/日
+func GetFileDayFront() string {
+	template := "2006/01/02"
+	return time.Now().AddDate(0, 0, -1).Format(template)
+}

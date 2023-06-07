@@ -50,9 +50,9 @@ export function login(data: object) {
 }
 
 // 文件上传
-export function upload(data: object, url: any) {
+export function chunkFile(data: object) {
     return request({
-        url: `/v1/upload?type=${url.type}&&url=${url.url}`,
+        url: `/v1/upload/chunkFile`,
         method: 'POST',
         data: data,
         headers: {
@@ -60,3 +60,16 @@ export function upload(data: object, url: any) {
         }
     });
 }
+
+// 合并切片
+export function mergeFile(data: object) {
+    return request({
+        url: '/v1/upload/mergeFile',
+        method: 'POST',
+        data: data,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+}
+
