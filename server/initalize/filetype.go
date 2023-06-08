@@ -2,7 +2,7 @@ package initalize
 
 import (
 	"github.com/h2non/filetype"
-	"mime/multipart"
+	"os"
 )
 
 var goType = filetype.NewType("go", "go")
@@ -18,10 +18,10 @@ func initFileType() {
 }
 
 // GetFileType  获取文件类型
-func GetFileType(file *multipart.FileHeader) (string, string, error) {
-	f, _ := file.Open()
+func GetFileType(path string) (string, string, error) {
+	file, _ := os.Open(path)
 	head := make([]byte, 261)
-	_, err := f.Read(head)
+	_, err := file.Read(head)
 	if err != nil {
 		return "", "", err
 	}

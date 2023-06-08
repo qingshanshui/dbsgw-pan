@@ -15,7 +15,6 @@ import (
 	"io"
 	"mime/multipart"
 	"os"
-	"path"
 	"strconv"
 	"time"
 )
@@ -105,12 +104,11 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 	fileIndex := ctx.FormValue("fileIndex")
 	fileName := ctx.FormValue("fileName")
 	// 获取文件后缀
-	extName := path.Ext(fileName)
 	atom, err := strconv.Atoi(fileIndex)
 	if err != nil {
 		return ctx.JSON(t.Fail(err))
 	}
-	p := "static/upload/" + fileId + extName
+	p := "static/" + fileName
 	newFile, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0766)
 	if err != nil {
 		return ctx.JSON(t.Fail(err))
@@ -120,9 +118,8 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 		if atom == index {
 			break
 		}
-		fmt.Println("--------------------------------MergeFile--------------------------------")
 		// 文件流 存的路径 ：public/blob_1lV4DJWf2qs8MdQojPMwb_1
-		filePath := "static/" + "blob" + "_" + fileId + "_" + strconv.Itoa(index)
+		filePath := "static/" + fileName + "_" + fileId + "_" + strconv.Itoa(index)
 		f, _ := os.Open(filePath)
 		r := bufio.NewReader(f)
 		data := make([]byte, 1024, 1024)
@@ -137,9 +134,22 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 		}
 		index++
 	}
-	defer func() {
-		newFile.Close()
-	}()
+	newFile.Close()
+	Type, Mime, err := initalize.GetFileType(p)
+	if err != nil {
+		return ctx.JSON(t.Fail(err))
+	}
+	// 保存文件
+	fi := models.NewFileInfo()
+	fi.CreatedAt = time.Now()
+	fi.Name = fileName
+	fi.Path = p
+	fi.Size = 100
+	fi.Type = Type
+	fi.MIME = Mime
+	if err := fi.Create(); err != nil {
+		return ctx.JSON(t.Fail(err))
+	}
 	return ctx.JSON(t.Ok(map[string]interface{}{
 		"msg":  "合并成功",
 		"切片序号": p,
@@ -149,7 +159,7 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 // ChunkFile 上传切片
 func (t *DefaultController) ChunkFile(ctx *fiber.Ctx) error {
 	// 文件名名称
-	//fileName := ctx.FormValue("fileName")
+	fileName := ctx.FormValue("fileName")
 	// hash值（区分当前文件是那个的，也可以用uuid，nanoid，等）
 	fileId := ctx.FormValue("fileId")
 	fileIndex := ctx.FormValue("fileIndex")
@@ -159,7 +169,7 @@ func (t *DefaultController) ChunkFile(ctx *fiber.Ctx) error {
 		return ctx.JSON(t.Fail(err))
 	}
 	// 文件流 存的路径 ：public/blob_1lV4DJWf2qs8MdQojPMwb_1
-	filePath := "static/" + file.Filename + "_" + fileId + "_" + fileIndex
+	filePath := "static/" + fileName + "_" + fileId + "_" + fileIndex
 	// 转成file
 	upFile, _ := file.Open()
 	// 创建文件
@@ -168,8 +178,8 @@ func (t *DefaultController) ChunkFile(ctx *fiber.Ctx) error {
 		return ctx.JSON(t.Fail(err))
 	}
 	return ctx.JSON(t.Ok(map[string]interface{}{
-		"msg":  "上传成功",
-		"切片序号": fileIndex,
+		"msg":  "ok",
+		"size": file.Size,
 	}))
 }
 
@@ -200,53 +210,53 @@ func createFile(filePath string, upFile multipart.File) (bool, error) {
 }
 
 // Upload 文件上传
-func (t *DefaultController) Upload(c *fiber.Ctx) error {
-	//f_path := c.FormValue("f_path")   // 保存路径
-	fName := c.FormValue("f_name") // 文件名称
-	fSize := c.FormValue("f_size") // 文件大小
-	//f_start := c.FormValue("f_start") // 文件传输大小
-	file, _ := c.FormFile("blob") // 文件流
-
-	openFile, _ := file.Open()
-	p := "static/" + fName
-	newFile, _ := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0766)
-
-	data := make([]byte, 1024, 1024)
-	for {
-		total, err := openFile.Read(data)
-		if err == io.EOF {
-			openFile.Close()
-			break
-		}
-		_, err = newFile.Write(data[:total])
-	}
-	defer func() {
-		newFile.Close()
-	}()
-	stat, _ := newFile.Stat()
-	atopSize, _ := strconv.Atoi(fSize)
-	if stat.Size() == int64(atopSize) {
-
-		Type, Mime, err := initalize.GetFileType(file)
-		if err != nil {
-			return c.JSON(t.Fail(err))
-		}
-
-		// 保存文件
-		fi := models.NewFileInfo()
-		fi.CreatedAt = time.Now()
-		fi.Name = fName
-		fi.Path = fName
-		fi.Size = atopSize
-		fi.Type = Type
-		fi.MIME = Mime
-		if err := fi.Create(); err != nil {
-			return c.JSON(t.Fail(err))
-		}
-		return c.JSON(t.Ok("文件上传成功"))
-	}
-	return c.JSON(t.Ok(stat.Size()))
-}
+//func (t *DefaultController) Upload(c *fiber.Ctx) error {
+//	//f_path := c.FormValue("f_path")   // 保存路径
+//	fName := c.FormValue("f_name") // 文件名称
+//	fSize := c.FormValue("f_size") // 文件大小
+//	//f_start := c.FormValue("f_start") // 文件传输大小
+//	file, _ := c.FormFile("blob") // 文件流
+//
+//	openFile, _ := file.Open()
+//	p := "static/" + fName
+//	newFile, _ := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0766)
+//
+//	data := make([]byte, 1024, 1024)
+//	for {
+//		total, err := openFile.Read(data)
+//		if err == io.EOF {
+//			openFile.Close()
+//			break
+//		}
+//		_, err = newFile.Write(data[:total])
+//	}
+//	defer func() {
+//		newFile.Close()
+//	}()
+//	stat, _ := newFile.Stat()
+//	atopSize, _ := strconv.Atoi(fSize)
+//	if stat.Size() == int64(atopSize) {
+//
+//		Type, Mime, err := initalize.GetFileType(file)
+//		if err != nil {
+//			return c.JSON(t.Fail(err))
+//		}
+//
+//		// 保存文件
+//		fi := models.NewFileInfo()
+//		fi.CreatedAt = time.Now()
+//		fi.Name = fName
+//		fi.Path = fName
+//		fi.Size = atopSize
+//		fi.Type = Type
+//		fi.MIME = Mime
+//		if err := fi.Create(); err != nil {
+//			return c.JSON(t.Fail(err))
+//		}
+//		return c.JSON(t.Ok("文件上传成功"))
+//	}
+//	return c.JSON(t.Ok(stat.Size()))
+//}
 
 // RandomImg 随机图片
 func (t *DefaultController) RandomImg(c *fiber.Ctx) error {

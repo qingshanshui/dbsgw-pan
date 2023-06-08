@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {reactive, defineExpose, ref,getCurrentInstance} from "vue";
+import {reactive, defineExpose, ref, getCurrentInstance} from "vue";
 import {useMessage, UploadCustomRequestOptions} from 'naive-ui'
 import {useRoute} from "vue-router"
 import {chunkFile, mergeFile} from "@/api";
 import bus from "@/utils/bus";
-import { nanoid } from "nanoid";
+import {nanoid} from "nanoid";
 // 获取上下文
-const { proxy } = <any>getCurrentInstance()
+const {proxy} = <any>getCurrentInstance()
 let route = useRoute()
 const message = useMessage()
 let state = reactive({
@@ -49,7 +49,7 @@ const customRequest = async ({
 
   // 创建切片
   let fileChunks: any = [] // 切片集合数组
-  let size = 1024 * 1024*2; // 2m 切片大小
+  let size = 1024 * 1024 * 2; // 2m 切片大小
   let index = 0 // 切片序号
   let files = file.file // file文件
 
@@ -77,8 +77,8 @@ const customRequest = async ({
   formDatas.append('fileName', file.name)
   formDatas.append('fileIndex', fileChunks.length)
   let res: any = await mergeFile(formDatas)
-  console.log(res,"res")
-  if (res.data.code != 1000) return  message.success("上传失败")
+  console.log(res, "res")
+  if (res.data.code != 1000) return message.success("上传失败")
   message.success("上传成功")
 
 }
