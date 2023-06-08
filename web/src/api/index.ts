@@ -73,3 +73,15 @@ export function mergeFile(data: object) {
     });
 }
 
+// 检验文件是否存在
+export function verifyFile(data: object) {
+    return request({
+        url: '/v1/upload/verifyFile',
+        method: 'POST',
+        data: data,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+}
+

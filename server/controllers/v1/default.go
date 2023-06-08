@@ -13,7 +13,6 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"io"
-	"mime/multipart"
 	"os"
 	"strconv"
 	"time"
@@ -98,7 +97,6 @@ func (t *DefaultController) Login(c *fiber.Ctx) error {
 
 // MergeFile 合并切片
 func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
-	fmt.Println("--------------------------------MergeFile--------------------------------")
 	// hash值（区分当前文件是那个的，也可以用uuid，nanoid，等）
 	fileId := ctx.FormValue("fileId")
 	fileIndex := ctx.FormValue("fileIndex")
@@ -109,6 +107,12 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 		return ctx.JSON(t.Fail(err))
 	}
 	p := "static/" + fileName
+
+	// 当文件存在就删除原文件
+	exists, _ := utils.PathExists(p)
+	if exists {
+		os.Remove(p)
+	}
 	newFile, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0766)
 	if err != nil {
 		return ctx.JSON(t.Fail(err))
@@ -119,7 +123,7 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 			break
 		}
 		// 文件流 存的路径 ：public/blob_1lV4DJWf2qs8MdQojPMwb_1
-		filePath := "static/" + fileName + "_" + fileId + "_" + strconv.Itoa(index)
+		filePath := "static/public/" + fileName + "_" + fileId + "_" + strconv.Itoa(index)
 		f, _ := os.Open(filePath)
 		r := bufio.NewReader(f)
 		data := make([]byte, 1024, 1024)
@@ -169,12 +173,13 @@ func (t *DefaultController) ChunkFile(ctx *fiber.Ctx) error {
 		return ctx.JSON(t.Fail(err))
 	}
 	// 文件流 存的路径 ：public/blob_1lV4DJWf2qs8MdQojPMwb_1
-	filePath := "static/" + fileName + "_" + fileId + "_" + fileIndex
-	// 转成file
-	upFile, _ := file.Open()
-	// 创建文件
-	fileBool, err := createFile(filePath, upFile)
-	if !fileBool {
+	filePath := "static/public/" + fileName + "_" + fileId + "_" + fileIndex
+	exists, _ := utils.PathExists("static/public/")
+	if !exists {
+		fmt.Println(exists, "=======================")
+		os.MkdirAll("static/public/", os.ModePerm)
+	}
+	if err := ctx.SaveFile(file, filePath); err != nil {
 		return ctx.JSON(t.Fail(err))
 	}
 	return ctx.JSON(t.Ok(map[string]interface{}{
@@ -183,80 +188,19 @@ func (t *DefaultController) ChunkFile(ctx *fiber.Ctx) error {
 	}))
 }
 
-// 创建文件
-func createFile(filePath string, upFile multipart.File) (bool, error) {
-	fileBool, err := utils.PathExists(filePath)
-	if fileBool && err == nil {
-		return true, errors.New("文件以存在")
-	} else {
-		newFile, err := os.Create(filePath)
-		data := make([]byte, 1024, 1024)
-		for {
-			total, err := upFile.Read(data)
-			if err == io.EOF {
-				break
-			}
-			_, err = newFile.Write(data[:total])
-			if err != nil {
-				return false, errors.New("文件上传失败")
-			}
-		}
-		defer newFile.Close()
-		if err != nil {
-			return false, errors.New("创建文件失败")
-		}
+// VerifyFile 检查文件是否存在
+func (t *DefaultController) VerifyFile(c *fiber.Ctx) error {
+	fileName := c.FormValue("fileName")
+	p := "static/" + fileName
+	exists, err := utils.PathExists(p)
+	if err != nil {
+		return c.JSON(t.Fail(err))
 	}
-	return true, nil
+	if exists {
+		return c.JSON(t.Fail(errors.New("存在重复文件")))
+	}
+	return c.JSON(t.Ok(exists))
 }
-
-// Upload 文件上传
-//func (t *DefaultController) Upload(c *fiber.Ctx) error {
-//	//f_path := c.FormValue("f_path")   // 保存路径
-//	fName := c.FormValue("f_name") // 文件名称
-//	fSize := c.FormValue("f_size") // 文件大小
-//	//f_start := c.FormValue("f_start") // 文件传输大小
-//	file, _ := c.FormFile("blob") // 文件流
-//
-//	openFile, _ := file.Open()
-//	p := "static/" + fName
-//	newFile, _ := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0766)
-//
-//	data := make([]byte, 1024, 1024)
-//	for {
-//		total, err := openFile.Read(data)
-//		if err == io.EOF {
-//			openFile.Close()
-//			break
-//		}
-//		_, err = newFile.Write(data[:total])
-//	}
-//	defer func() {
-//		newFile.Close()
-//	}()
-//	stat, _ := newFile.Stat()
-//	atopSize, _ := strconv.Atoi(fSize)
-//	if stat.Size() == int64(atopSize) {
-//
-//		Type, Mime, err := initalize.GetFileType(file)
-//		if err != nil {
-//			return c.JSON(t.Fail(err))
-//		}
-//
-//		// 保存文件
-//		fi := models.NewFileInfo()
-//		fi.CreatedAt = time.Now()
-//		fi.Name = fName
-//		fi.Path = fName
-//		fi.Size = atopSize
-//		fi.Type = Type
-//		fi.MIME = Mime
-//		if err := fi.Create(); err != nil {
-//			return c.JSON(t.Fail(err))
-//		}
-//		return c.JSON(t.Ok("文件上传成功"))
-//	}
-//	return c.JSON(t.Ok(stat.Size()))
-//}
 
 // RandomImg 随机图片
 func (t *DefaultController) RandomImg(c *fiber.Ctx) error {
