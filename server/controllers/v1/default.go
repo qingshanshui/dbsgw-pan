@@ -10,7 +10,6 @@ import (
 	"fiber-layout/service"
 	"fiber-layout/validator"
 	"fiber-layout/validator/form"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"io"
 	"os"
@@ -111,7 +110,9 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 	// 当文件存在就删除原文件
 	exists, _ := utils.PathExists(p)
 	if exists {
-		os.Remove(p)
+		if err := os.Remove(p); err != nil {
+			return ctx.JSON(t.Fail(err))
+		}
 	}
 	newFile, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0766)
 	if err != nil {
@@ -138,11 +139,15 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 		}
 		index++
 	}
-	newFile.Close()
+	if err := newFile.Close(); err != nil {
+		return ctx.JSON(t.Fail(err))
+	}
 	Type, Mime, err := initalize.GetFileType(p)
 	if err != nil {
 		return ctx.JSON(t.Fail(err))
 	}
+	// 获取文件md5
+	md5 := utils.GetFileMd5(p)
 	// 保存文件
 	fi := models.NewFileInfo()
 	fi.CreatedAt = time.Now()
@@ -150,14 +155,12 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 	fi.Path = p
 	fi.Size = 100
 	fi.Type = Type
+	fi.Md5 = md5
 	fi.MIME = Mime
 	if err := fi.Create(); err != nil {
 		return ctx.JSON(t.Fail(err))
 	}
-	return ctx.JSON(t.Ok(map[string]interface{}{
-		"msg":  "合并成功",
-		"切片序号": p,
-	}))
+	return ctx.JSON(t.Ok("合并成功"))
 }
 
 // ChunkFile 上传切片
@@ -176,16 +179,14 @@ func (t *DefaultController) ChunkFile(ctx *fiber.Ctx) error {
 	filePath := "static/public/" + fileName + "_" + fileId + "_" + fileIndex
 	exists, _ := utils.PathExists("static/public/")
 	if !exists {
-		fmt.Println(exists, "=======================")
-		os.MkdirAll("static/public/", os.ModePerm)
+		if err := os.MkdirAll("static/public/", os.ModePerm); err != nil {
+			return ctx.JSON(t.Fail(err))
+		}
 	}
 	if err := ctx.SaveFile(file, filePath); err != nil {
 		return ctx.JSON(t.Fail(err))
 	}
-	return ctx.JSON(t.Ok(map[string]interface{}{
-		"msg":  "ok",
-		"size": file.Size,
-	}))
+	return ctx.JSON(t.Ok("ok"))
 }
 
 // VerifyFile 检查文件是否存在
@@ -208,6 +209,5 @@ func (t *DefaultController) RandomImg(c *fiber.Ctx) error {
 	if err != nil {
 		return c.JSON(t.Fail(err))
 	}
-	fmt.Println(api)
 	return c.SendFile(api.Path)
 }

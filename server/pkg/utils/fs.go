@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"mime/multipart"
 	"os"
 	"path"
 	"strconv"
@@ -124,9 +123,9 @@ func Upload(extName, route string) (error, string, string) {
 }
 
 // GetFileMd5 获取文件md5
-func GetFileMd5(file *multipart.FileHeader) string {
+func GetFileMd5(path string) string {
 	md5hash := md5.New()
-	f, _ := file.Open()
+	f, _ := os.Open(path)
 	io.Copy(md5hash, f)
 	has := md5hash.Sum(nil)
 	return fmt.Sprintf("%x", has)
