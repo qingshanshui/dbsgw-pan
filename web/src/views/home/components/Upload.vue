@@ -54,6 +54,7 @@ const customRequest = async ({
 
   let formData = new FormData()
   formData.append('fileName', file.name)
+  formData.append('filePath', route.path)
   let verifyFileRes: any = await verifyFile(formData)
   if (verifyFileRes.data.code != 1000) {
     return dialog.warning({
@@ -100,6 +101,8 @@ const uploadRequest = async (file: any, onError: any, onFinish: any) => {
   formDatas.append('fileId', id)
   formDatas.append('fileName', file.name)
   formDatas.append('fileIndex', fileChunks.length)
+  formDatas.append('filePath', route.path)
+
   let res: any = await mergeFile(formDatas)
   console.log(res, "res")
   if (res.data.code != 1000) {

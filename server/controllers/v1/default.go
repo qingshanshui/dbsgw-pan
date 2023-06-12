@@ -101,6 +101,7 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 	fileId := ctx.FormValue("fileId")
 	fileIndex := ctx.FormValue("fileIndex")
 	fileName := ctx.FormValue("fileName")
+	filePath := ctx.FormValue("filePath")
 	// 获取文件后缀
 	atom, err := strconv.Atoi(fileIndex)
 	if err != nil {
@@ -108,7 +109,11 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 	}
 
 	workDir, _ := os.Getwd()
-	p := workDir + "/static/" + fileName
+	p := ""
+	if filePath == "/" {
+		p = workDir + "/static" + "/" + fileName
+	}
+	p = workDir + "/static" + filePath + "/" + fileName
 
 	//当文件存在就删除原文件
 	exists, _ := utils.PathExists(p)
@@ -201,7 +206,15 @@ func (t *DefaultController) ChunkFile(ctx *fiber.Ctx) error {
 // VerifyFile 检查文件是否存在
 func (t *DefaultController) VerifyFile(c *fiber.Ctx) error {
 	fileName := c.FormValue("fileName")
-	p := "static/" + fileName
+	filePath := c.FormValue("filePath")
+
+	workDir, _ := os.Getwd()
+	p := ""
+	if filePath == "/" {
+		p = workDir + "/static" + "/" + fileName
+	}
+	p = workDir + "/static" + filePath + "/" + fileName
+
 	exists, err := utils.PathExists(p)
 	if err != nil {
 		return c.JSON(t.Fail(err))
