@@ -85,3 +85,15 @@ export function verifyFile(data: object) {
     });
 }
 
+// 删除文件
+export function Del(data: object) {
+    return request({
+        url: '/v1/upload/del',
+        method: 'POST',
+        data: data,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+}
+

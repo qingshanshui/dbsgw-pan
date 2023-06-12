@@ -10,6 +10,7 @@ import bus from "@/utils/bus";
 import {Obj} from '../index'
 
 import {userInfos} from "@/stores/user";
+
 let users = userInfos()
 
 
@@ -44,7 +45,7 @@ const initStateFile = async () => {
 // 获取文件列表
 const initStateList = async () => {
   state.show = true
-  let res = await GetList({path: route.path === "/" ? "" : route.path})
+  let res = await GetList({path: route.path})
   state.show = false
   state.DirOrDetail = false
   state.list = res?.data?.data || []
@@ -54,7 +55,7 @@ initStateFile()
 bus.on("stateLoading", (loading: any) => {
   state.show = loading
 })
-bus.on("reload",()=>{
+bus.on("reload", () => {
   initStateFile()
 })
 </script>

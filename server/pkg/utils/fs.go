@@ -29,7 +29,7 @@ func GetDirDataList(path string) ([]form.ListResponse, error) {
 		}
 		for i := range fileInfoList {
 			l = append(l, form.ListResponse{
-				Path:  path + "/" + fileInfoList[i].Name(),
+				Path:  path,
 				IsDir: fileInfoList[i].IsDir(),
 				Time:  fileInfoList[i].ModTime().Format("2006-01-02 15:04:05"),
 				Name:  fileInfoList[i].Name(),

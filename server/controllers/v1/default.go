@@ -212,6 +212,32 @@ func (t *DefaultController) VerifyFile(c *fiber.Ctx) error {
 	return c.JSON(t.Ok(exists))
 }
 
+// Del 删除文件
+func (t *DefaultController) Del(c *fiber.Ctx) error {
+	filePath := c.FormValue("filePath")
+	fileName := c.FormValue("fileName")
+	workDir, _ := os.Getwd()
+	p := ""
+	if filePath == "/" {
+		p = workDir + "/static" + "/" + fileName
+	}
+	p = workDir + "/static" + filePath + "/" + fileName
+
+	fmt.Println(p, "路径")
+
+	exists, err := utils.PathExists(p)
+	if err != nil {
+		return c.JSON(t.Fail(err))
+	}
+	if exists {
+		if err := os.Remove(p); err != nil {
+			return c.JSON(t.Fail(err))
+		}
+		return c.JSON(t.Ok(errors.New("文件删除成功")))
+	}
+	return c.JSON(t.Ok(exists))
+}
+
 // RandomImg 随机图片
 func (t *DefaultController) RandomImg(c *fiber.Ctx) error {
 	api, err := service.NewDefaultService().RandomImg()

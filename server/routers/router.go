@@ -21,4 +21,5 @@ func SetRoute(app *fiber.App) {
 	group.Post("/upload/chunkFile", main.ChunkFile)   // 上传切片
 	group.Post("/upload/mergeFile", main.MergeFile)   // 合并切片
 	group.Post("/upload/verifyFile", main.VerifyFile) // 检查file是否存在
+	group.Post("/upload/del", main.Del)               // 删除文件
 }

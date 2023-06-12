@@ -1,7 +1,7 @@
 <!--文件列表-右键操作-->
 <script setup lang="ts">
 import {onBeforeUnmount} from "vue";
-import {GetFileDownload} from "@/api";
+import {GetFileDownload, Del} from "@/api";
 import {saveAs} from "@/utils/utils";
 import bus from "@/utils/bus"
 import {useMessage} from 'naive-ui'
@@ -11,6 +11,16 @@ const message = useMessage()
 const props = defineProps(['detail'])
 const {toClipboard} = useClipboard()
 
+const deleteFiles = (path, name) => {
+  Del({filePath: path, fileName: name}).then((res) => {
+    console.log(res)
+    if (res.data.code != 1000) {
+      return message.success("删除失败")
+    }
+    message.success("删除成功")
+    bus.emit("reload")
+  })
+}
 // 复制链接
 const copy = async (path: string) => {
   try {
@@ -38,6 +48,11 @@ onBeforeUnmount(() => {
 <template>
   <div class="rightOperation">
     <div class=".col-xs-12">
+      <n-button type="primary" @click="deleteFiles(props.detail.path,props.detail.name)">
+        删除
+      </n-button>
+    </div>
+    <div class=".col-xs-12">
       <n-button type="primary" @click="copy(props.detail.path)">
         复制链接
       </n-button>
@@ -62,7 +77,11 @@ onBeforeUnmount(() => {
   border-radius: 6px;
 }
 
-.rightOperation > div:nth-child(1) {
+.rightOperation > div {
   margin-bottom: 10px
+}
+
+.rightOperation > div:last-child {
+  margin-bottom: 0px
 }
 </style>
