@@ -10,6 +10,7 @@ import (
 	"fiber-layout/service"
 	"fiber-layout/validator"
 	"fiber-layout/validator/form"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"io"
 	"os"
@@ -105,16 +106,20 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 	if err != nil {
 		return ctx.JSON(t.Fail(err))
 	}
-	p := "static/" + fileName
 
-	// 当文件存在就删除原文件
+	workDir, _ := os.Getwd()
+	p := workDir + "/static/" + fileName
+
+	//当文件存在就删除原文件
 	exists, _ := utils.PathExists(p)
 	if exists {
 		if err := os.Remove(p); err != nil {
+			fmt.Println("删除原来文件：", err)
 			return ctx.JSON(t.Fail(err))
 		}
 	}
-	newFile, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0766)
+
+	newFile, err := os.OpenFile(p, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
 	if err != nil {
 		return ctx.JSON(t.Fail(err))
 	}
@@ -124,8 +129,11 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 			break
 		}
 		// 文件流 存的路径 ：public/blob_1lV4DJWf2qs8MdQojPMwb_1
-		filePath := "static/public/" + fileName + "_" + fileId + "_" + strconv.Itoa(index)
-		f, _ := os.Open(filePath)
+		filePath := workDir + "/static/public/" + fileName + "_" + fileId + "_" + strconv.Itoa(index)
+		f, err := os.Open(filePath)
+		if err != nil {
+			break
+		}
 		r := bufio.NewReader(f)
 		data := make([]byte, 1024, 1024)
 		for {
@@ -135,17 +143,18 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 				os.Remove(filePath)
 				break
 			}
-			_, err = newFile.Write(data[:total])
+			_, errs := newFile.Write(data[:total])
+			if errs != nil {
+				break
+			}
+
 		}
 		index++
 	}
-	if err := newFile.Close(); err != nil {
-		return ctx.JSON(t.Fail(err))
-	}
-	Type, Mime, err := initalize.GetFileType(p)
-	if err != nil {
-		return ctx.JSON(t.Fail(err))
-	}
+	defer func() {
+		newFile.Close()
+	}()
+	Type, Mime, _ := initalize.GetFileType(p)
 	// 获取文件md5
 	md5 := utils.GetFileMd5(p)
 	// 保存文件

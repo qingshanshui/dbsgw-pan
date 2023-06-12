@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {reactive, defineExpose, ref, getCurrentInstance} from "vue";
+import {reactive, ref, getCurrentInstance} from "vue";
 import {useMessage, UploadCustomRequestOptions, useDialog} from 'naive-ui'
 import {useRoute} from "vue-router"
 import {chunkFile, mergeFile, verifyFile} from "@/api";
@@ -69,7 +69,7 @@ const customRequest = async ({
 }
 
 // 上传文件请求处理方法
-const uploadRequest = async (file, onError, onFinish) => {
+const uploadRequest = async (file: any, onError: any, onFinish: any) => {
   // 创建切片
   let fileChunks: any = [] // 切片集合数组
   let size = 1024 * 1024 * 2; // 2m 切片大小
