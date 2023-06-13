@@ -9,6 +9,8 @@ import Mains from "./layout/Main.vue";
     <Headers/>
     <Navs/>
     <Mains/>
+    <a href="https://beian.miit.gov.cn" target="_blank"
+       style="color: #999;position: fixed;left: 50%;bottom: 10px;transition: inherit;transform: translateX(-50%);">鄂ICP备2022012826号</a>
   </div>
 </template>
 

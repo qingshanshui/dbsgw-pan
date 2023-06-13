@@ -11,7 +11,7 @@ const message = useMessage()
 const props = defineProps(['detail'])
 const {toClipboard} = useClipboard()
 
-const deleteFiles = (path, name) => {
+const deleteFiles = (path: any, name: any) => {
   Del({filePath: path, fileName: name}).then((res) => {
     console.log(res)
     if (res.data.code != 1000) {
