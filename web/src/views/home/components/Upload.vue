@@ -84,7 +84,6 @@ const uploadRequest = async (file: any, onError: any, onFinish: any) => {
     })
   }
 
-  console.log(files, file)
   // 生成 文件统一的 nanoid
   let id = nanoid()
   for (let i = 0; i < fileChunks.length; i++) {
@@ -104,7 +103,6 @@ const uploadRequest = async (file: any, onError: any, onFinish: any) => {
   formDatas.append('filePath', route.path)
 
   let res: any = await mergeFile(formDatas)
-  console.log(res, "res")
   if (res.data.code != 1000) {
     onError()
     return message.success("上传失败")
@@ -121,14 +119,12 @@ defineExpose({show, hide})
 <template>
   <n-modal v-model:show="state.showModal" :mask-closable="false" preset="dialog" title="文件上传">
     <div class="uploads">
-
       <div class="uploads-item">
         <n-upload multiple ref="uploadRef" :default-upload="false" :custom-request="customRequest">
           <n-button type="info" size="small">选择文件</n-button>
         </n-upload>
         <n-button class="uploads-item-click" type="info" size="small" @click="handleClick">上传文件</n-button>
       </div>
-
     </div>
   </n-modal>
 </template>

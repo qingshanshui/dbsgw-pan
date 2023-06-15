@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import {Home} from '@vicons/ionicons5'
 import {useRoute, useRouter} from "vue-router"
-import {watch, reactive, computed, onMounted,ref} from "vue"
+import {watch, reactive, computed, onMounted, ref} from "vue"
 import {useMessage} from 'naive-ui'
 import Upload from "@/views/home/components/Upload.vue";
 
@@ -74,9 +74,8 @@ onMounted(() => {
     <div class="upload" v-if="isUpload">
       <n-button type="info" size="small" @click="handelButton">上传文件</n-button>
     </div>
-    <Upload ref="uploads" />
+    <Upload ref="uploads"/>
   </div>
-
 </template>
 
 <style scoped>
@@ -91,7 +90,6 @@ onMounted(() => {
   flex: 1;
   overflow: hidden;
 }
-
 
 /deep/ a,
 a:hover {

@@ -13,7 +13,6 @@ const {toClipboard} = useClipboard()
 
 const deleteFiles = (path: any, name: any) => {
   Del({filePath: path, fileName: name}).then((res) => {
-    console.log(res)
     if (res.data.code != 1000) {
       return message.success("删除失败")
     }

@@ -44,9 +44,9 @@ export function sizeToStr(size: number) {
 }
 
 /**
- * 下载文件
- * @param blob 
- * @param filename 
+ * 下载文件 （500mb以下没问题）
+ * @param blob
+ * @param filename
  */
 export function saveAs(blob: any, filename: any) {
     let w = window as any

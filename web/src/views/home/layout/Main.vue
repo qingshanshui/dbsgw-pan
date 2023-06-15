@@ -1,6 +1,6 @@
 <!--主体-->
 <script setup lang="ts">
-import {reactive, onMounted, watch} from "vue"
+import {reactive, watch} from "vue"
 import NotFound from "../components/NotFound.vue"
 import List from "../components/List.vue"
 import Details from "../components/Details.vue"

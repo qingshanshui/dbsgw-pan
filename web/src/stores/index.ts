@@ -1,9 +1,6 @@
 // https://pinia.vuejs.org/
-// pinia 实例
-import { createPinia } from 'pinia';
+import {createPinia} from 'pinia';// pinia 实例
 
-// 创建
-const pinia = createPinia();
+const pinia = createPinia();// 创建
 
-// 导出
-export default pinia;
+export default pinia;// 导出

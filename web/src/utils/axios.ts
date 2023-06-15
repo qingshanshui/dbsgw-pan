@@ -13,7 +13,6 @@ service.interceptors.request.use(
         if (localStorage.getItem('token')) {
             config.headers['Authorization'] = `${localStorage.getItem('token')}`;
         }
-        console.log("请求拦截：", config)
         return config;
     },
     (error) => {
@@ -25,7 +24,6 @@ service.interceptors.request.use(
 // 添加响应拦截器
 service.interceptors.response.use(
     (response) => {
-        console.log("响应拦截：", response)
         return response
     },
     (error) => {

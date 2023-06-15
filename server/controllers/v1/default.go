@@ -112,8 +112,9 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 	p := ""
 	if filePath == "/" {
 		p = workDir + "/static" + "/" + fileName
+	} else {
+		p = workDir + "/static" + filePath + "/" + fileName
 	}
-	p = workDir + "/static" + filePath + "/" + fileName
 
 	//当文件存在就删除原文件
 	exists, _ := utils.PathExists(p)
@@ -150,6 +151,7 @@ func (t *DefaultController) MergeFile(ctx *fiber.Ctx) error {
 			}
 			_, errs := newFile.Write(data[:total])
 			if errs != nil {
+
 				break
 			}
 
@@ -212,8 +214,9 @@ func (t *DefaultController) VerifyFile(c *fiber.Ctx) error {
 	p := ""
 	if filePath == "/" {
 		p = workDir + "/static" + "/" + fileName
+	} else {
+		p = workDir + "/static" + filePath + "/" + fileName
 	}
-	p = workDir + "/static" + filePath + "/" + fileName
 
 	exists, err := utils.PathExists(p)
 	if err != nil {
@@ -233,11 +236,9 @@ func (t *DefaultController) Del(c *fiber.Ctx) error {
 	p := ""
 	if filePath == "/" {
 		p = workDir + "/static" + "/" + fileName
+	} else {
+		p = workDir + "/static" + filePath + "/" + fileName
 	}
-	p = workDir + "/static" + filePath + "/" + fileName
-
-	fmt.Println(p, "路径")
-
 	exists, err := utils.PathExists(p)
 	if err != nil {
 		return c.JSON(t.Fail(err))
