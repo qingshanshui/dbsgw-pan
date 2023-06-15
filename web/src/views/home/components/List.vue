@@ -13,7 +13,7 @@ let state = reactive({
   detail: {}
 })
 const handelDirRoute = (obj: any) => {
-  router.push(obj.path + obj.name)
+  router.push(obj.path === "/" ? obj.name : obj.path + '/' + obj.name)
 }
 const contextmenuOperation = (e: any, obj: any) => {
   e.preventDefault()

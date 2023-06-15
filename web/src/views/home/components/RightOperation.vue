@@ -22,9 +22,9 @@ const deleteFiles = (path: any, name: any) => {
   })
 }
 // 复制链接
-const copy = async (path: string) => {
+const copy = async (path: string, name: string) => {
   try {
-    await toClipboard(`${location.origin}/v1/download?path=${path}`)
+    await toClipboard(`${location.origin}/v1/download?path=${path === "/" ? name : path + '/' + name}`)
     message.success('复制成功')
   } catch (e: any) {
     message.warning(e)
@@ -32,9 +32,9 @@ const copy = async (path: string) => {
 }
 
 // 下载文件
-const handelDownload = (path: string) => {
+const handelDownload = (path: string, name: string) => {
   bus.emit('stateLoading', true)
-  GetFileDownload({path}).then(blob => {
+  GetFileDownload({path: path === "/" ? name : path + '/' + name}).then(blob => {
     saveAs(blob.data, props.detail.name)
     bus.emit('stateLoading', false)
     message.success('下载成功')
@@ -53,12 +53,12 @@ onBeforeUnmount(() => {
       </n-button>
     </div>
     <div class=".col-xs-12">
-      <n-button type="primary" @click="copy(props.detail.path)">
+      <n-button type="primary" @click="copy(props.detail.path,props.detail.name)">
         复制链接
       </n-button>
     </div>
     <div class=".col-xs-12">
-      <n-button type="info" @click="handelDownload(props.detail.path)">
+      <n-button type="info" @click="handelDownload(props.detail.path,props.detail.name)">
         下载
       </n-button>
     </div>

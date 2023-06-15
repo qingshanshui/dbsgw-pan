@@ -1,3 +1,11 @@
+<!--
+ * @Author: 青山水 1578347363@qq.com
+ * @Date: 2023-05-31 08:48:40
+ * @LastEditors: 青山水 1578347363@qq.com
+ * @LastEditTime: 2023-06-15 20:09:41
+ * @FilePath: \dbsgw-pan\README.md
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 
 # dbsgw-pan
 
@@ -36,12 +44,12 @@ nohup ./fiber-layout -mode prod # 服务器 nohup工具
 - [x] 正常存储文件
 - [x] 上传文件
 - [x] 下载文件
-- [ ] 删除文件
+- [x] 删除文件
 - [x] 分享文件
 
 ### 问题
 - [ ] 面包屑导航深度过长会挤压页面【......】
-- [ ] 上传文件超过2m就会超时
+- [x] 上传文件超过2m就会超时
 - [ ] 图片分享链接盗用
 
 ### 代码贡献

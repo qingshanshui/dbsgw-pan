@@ -69,7 +69,7 @@ func (t *DefaultController) Download(c *fiber.Ctx) error {
 		return err
 	}
 	pwd, _ := os.Getwd()
-	url := pwd + "/static" + DownloadRequestForm.Path
+	url := pwd + "/static/" + DownloadRequestForm.Path
 	exists, err := utils.PathExists(url)
 	if err != nil {
 		return err
